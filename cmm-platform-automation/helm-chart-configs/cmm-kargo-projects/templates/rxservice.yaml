@@ -22,7 +22,7 @@ spec:
   subscriptions:
   - image:
       discoveryLimit: 10
-      repoURL: kargoacr.azurecr.io/nginx
+      repoURL:  katscratch.azurecr.io/kargo-test/nginx
       imageSelectionStrategy: SemVer
   - chart:
       repoURL: oci://kargoacr.azurecr.io/helm/rxservice
@@ -49,7 +49,7 @@ spec:
             name: rxservice
             chartPath: cmm-apps-staging/helm-chart-configs/rxservice
           images:
-          - image: kargoacr.azurecr.io/nginx
+          - image:  katscratch.azurecr.io/kargo-test/nginx
             key: 'rxservice.image.tag'
             value: Tag
             valuesFilePath: cmm-apps-staging/helm-chart-configs/rxservice/values.yaml
@@ -75,7 +75,7 @@ spec:
         pullRequest: {}
         helm:
           images:
-          - image: kargoacr.azurecr.io/nginx
+          - image:  katscratch.azurecr.io/kargo-test/nginx
             key: 'rxservice.image.tag'
             value: Tag
             valuesFilePath: cmm-apps-release/helm-chart-configs/rxservice/values.yaml
@@ -108,7 +108,7 @@ spec:
             name: rxservice
             chartPath: cmm-apps-env5/helm-chart-configs/rxservice
           images:
-          - image: kargoacr.azurecr.io/nginx
+          - image:  katscratch.azurecr.io/kargo-test/nginx
             key: 'rxservice.image.tag'
             value: Tag
             valuesFilePath: cmm-apps-env5/helm-chart-configs/rxservice/values.yaml

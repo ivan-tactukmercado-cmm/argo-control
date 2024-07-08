@@ -1,6 +1,6 @@
 rxintake:
   image:
-    repository: kargoacr.azurecr.io/nginx
+    repository:  katscratch.azurecr.io/kargo-test/nginx
     tag: '1.0.12'
 
   replica:
