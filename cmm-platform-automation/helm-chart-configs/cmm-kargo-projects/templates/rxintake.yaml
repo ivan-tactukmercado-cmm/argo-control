@@ -22,7 +22,7 @@ spec:
   subscriptions:
   - image:
       discoveryLimit: 10
-      repoURL:  katscratch.azurecr.io/kargo-test/nginx
+      repoURL:  kargocmm.azurecr.io/kargo-test/nginx
       imageSelectionStrategy: SemVer
   - chart:
       repoURL: oci://kargoacr.azurecr.io/helm/rxintake
@@ -49,7 +49,7 @@ spec:
             name: rxintake
             chartPath: cmm-apps-staging/helm-chart-configs/rxintake
           images:
-          - image:  katscratch.azurecr.io/kargo-test/nginx
+          - image:  kargocmm.azurecr.io/kargo-test/nginx
             key: 'rxintake.image.tag'
             value: Tag
             valuesFilePath: cmm-apps-staging/helm-chart-configs/rxintake/values.yaml
@@ -75,7 +75,7 @@ spec:
         pullRequest: {}
         helm:
           images:
-          - image:  katscratch.azurecr.io/kargo-test/nginx
+          - image:  kargocmm.azurecr.io/kargo-test/nginx
             key: 'rxintake.image.tag'
             value: Tag
             valuesFilePath: cmm-apps-release/helm-chart-configs/rxintake/values.yaml
@@ -108,7 +108,7 @@ spec:
             name: rxintake
             chartPath: cmm-apps-env5/helm-chart-configs/rxintake
           images:
-          - image:  katscratch.azurecr.io/kargo-test/nginx
+          - image:  kargocmm.azurecr.io/kargo-test/nginx
             key: 'rxintake.image.tag'
             value: Tag
             valuesFilePath: cmm-apps-env5/helm-chart-configs/rxintake/values.yaml
