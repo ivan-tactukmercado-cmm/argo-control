@@ -25,7 +25,7 @@ spec:
       repoURL:  kargocmm.azurecr.io/kargo-test/nginx
       imageSelectionStrategy: SemVer
   - chart:
-      repoURL: oci://kargoacr.azurecr.io/helm/rxintake
+      repoURL: oci://kargocmm.azurecr.io/helm/rxintake
       semverConstraint: '>= 1.0.0'
 
 ---
@@ -45,7 +45,7 @@ spec:
         pullRequest: {}
         helm:
           charts:
-          - repository: oci://kargoacr.azurecr.io/helm
+          - repository: oci://kargocmm.azurecr.io/helm
             name: rxintake
             chartPath: cmm-apps-staging/helm-chart-configs/rxintake
           images:
@@ -80,7 +80,7 @@ spec:
             value: Tag
             valuesFilePath: cmm-apps-release/helm-chart-configs/rxintake/values.yaml
           charts:
-          - repository: oci://kargoacr.azurecr.io/helm
+          - repository: oci://kargocmm.azurecr.io/helm
             name: rxintake
             chartPath: cmm-apps-release/helm-chart-configs/rxintake
   verification:
@@ -104,7 +104,7 @@ spec:
         pullRequest: {}
         helm:
           charts:
-          - repository: oci://kargoacr.azurecr.io/helm
+          - repository: oci://kargocmm.azurecr.io/helm
             name: rxintake
             chartPath: cmm-apps-env5/helm-chart-configs/rxintake
           images:
