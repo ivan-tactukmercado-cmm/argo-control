@@ -3,4 +3,4 @@ dependencies:
   repository: oci://kargocmm.azurecr.io/helm
   version: 1.0.1
 digest: sha256:b933309a04429dab2b1d46074a1886d1d8a90bd8594c88cf2bae955ef3c4fc23
-generated: "2024-07-10T13:15:41.041178189Z"
+generated: "2024-07-10T13:20:43.635554028Z"
