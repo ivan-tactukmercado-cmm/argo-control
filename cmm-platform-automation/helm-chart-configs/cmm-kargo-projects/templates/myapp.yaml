@@ -22,7 +22,11 @@ spec:
   subscriptions:
   - image:
       discoveryLimit: 10
-      repoURL:  kargocmm.azurecr.io/kargo-test/nginx
+      repoURL:  kargocmm.azurecr.io/kargo-test/myapp
+      imageSelectionStrategy: SemVer
+  - image:
+      discoveryLimit: 10
+      repoURL:  kargocmm.azurecr.io/kargo-test/myapp-liquibase
       imageSelectionStrategy: SemVer
   - chart:
       repoURL: oci://kargocmm.azurecr.io/helm/myapp
@@ -49,8 +53,12 @@ spec:
             name: myapp
             chartPath: cmm-apps-staging/helm-chart-configs/myapp
           images:
-          - image:  kargocmm.azurecr.io/kargo-test/nginx
+          - image:  kargocmm.azurecr.io/kargo-test/myapp
             key: 'myapp.image.tag'
+            value: Tag
+            valuesFilePath: cmm-apps-staging/helm-chart-configs/myapp/values.yaml
+          - image:  kargocmm.azurecr.io/kargo-test/myapp-liquibase
+            key: 'myapp.liquibase.image.tag'
             value: Tag
             valuesFilePath: cmm-apps-staging/helm-chart-configs/myapp/values.yaml
   verification:
@@ -75,8 +83,12 @@ spec:
         pullRequest: {}
         helm:
           images:
-          - image:  kargocmm.azurecr.io/kargo-test/nginx
+          - image:  kargocmm.azurecr.io/kargo-test/myapp
             key: 'myapp.image.tag'
+            value: Tag
+            valuesFilePath: cmm-apps-release/helm-chart-configs/myapp/values.yaml
+          - image:  kargocmm.azurecr.io/kargo-test/myapp-liquibase
+            key: 'myapp.liquibase.image.tag'
             value: Tag
             valuesFilePath: cmm-apps-release/helm-chart-configs/myapp/values.yaml
           charts:
