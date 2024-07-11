@@ -106,6 +106,12 @@ tolerations: []
 
 affinity: {}
 
+environment:
+  name: dev
+  appId: model1
+  ddService: diagnosis
+  TZ: EST5EDT
+
 liquibase:
   image:
     # The image that the liquibase container runs
