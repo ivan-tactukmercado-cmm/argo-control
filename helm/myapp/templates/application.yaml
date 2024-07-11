@@ -1,0 +1,83 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.service.name }}
+  labels:
+    {{- include "commonLabels" . | nindent 4 }}
+spec:
+  selector:
+    {{- include "commonLabels" . | nindent 4 }}
+    component: web
+  ports:
+  - protocol: TCP
+    port: {{ .Values.service.port }}
+    targetPort: {{ .Values.service.targetPort }}
+---
+
+{{- define "databaseCredentials" }}
+- name: DEFAULT_DB_HOSTNAME
+  value: "{{ .Values.postgresql.fullnameOverride }}"
+- name: DEFAULT_DB_USERNAME
+  value: "{{ .Values.postgresql.postgresqlUsername }}"
+- name: DEFAULT_DB_PASSWORD
+  value: "{{ .Values.postgresql.postgresqlPassword }}"
+- name: DB_USERNAME
+  value: $(DEFAULT_DB_USERNAME)
+- name: DB_PASSWORD
+  value: $(DEFAULT_DB_PASSWORD)
+- name: DB_URL
+  value: jdbc:postgresql://$(DEFAULT_DB_HOSTNAME):5432/diagnosis_development
+- name: DB_CHANGELOGFILE
+  value: changelog.xml
+{{- end }}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  labels:
+    {{- include "commonLabels" . | nindent 4 }}
+    {{- include "datadogLabels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "commonLabels" . | nindent 6 }}
+      component: web
+  template:
+    metadata:
+      labels:
+        {{- include "commonLabels" . | nindent 8 }}
+        {{- include "datadogLabels" . | nindent 8 }}
+        component: web
+    spec:
+      volumes:
+      - name: diagnosis-json
+        configMap:
+          name: {{ .Values.configMap.name }}
+      - name: enviro-file-config
+        configMap:
+          name: enviro-file-config
+      containers:
+      - name: web
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.service.targetPort }}
+          name: {{ .Values.service.targetPortName }}
+      initContainers:
+        - name: liquibase
+          image: "{{ .Values.liquibase.image.repository }}:{{ .Values.liquibase.image.tag }}"
+          imagePullPolicy: {{ .Values.liquibase.image.pullPolicy }}
+          env:
+            - name: APP_ENV
+              value: "{{ .Values.environment.name }}"
+            - name: JAVA_OPTS
+              value: "-Xms{{ .Values.liquibase.resources.requests.memory }} -Xmx{{ .Values.liquibase.resources.limits.memory }}"
+            {{- include "databaseCredentials" . | nindent 12 }}
+          resources:
+            requests:
+              memory: {{ .Values.liquibase.resources.requests.memory }}
+              cpu: {{ .Values.liquibase.resources.requests.cpu }}
+            limits:
+              memory: {{ .Values.liquibase.resources.limits.memory }}
+              cpu: {{ .Values.liquibase.resources.limits.cpu }}

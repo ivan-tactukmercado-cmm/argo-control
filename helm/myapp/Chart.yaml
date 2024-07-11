@@ -22,3 +22,9 @@ version: 1.0.0
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
 appVersion: "1.16.0"
+
+dependencies:
+  - name: postgresql
+    repository: https://chartmuseum.sharedtech-stable.cmmaz.cloud
+    # Chart version 10.13.14 comes with postgresql 11.14.0, but we inject our own postgres 12 images
+    version: '10.13.14'

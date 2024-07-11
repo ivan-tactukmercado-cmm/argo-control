@@ -105,3 +105,65 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+
+environment:
+  name: dev
+  appId: model1
+  ddService: diagnosis
+  TZ: EST5EDT
+
+# These values are passed directly to the postgres chart (when standalone is true)
+# For details about that chart's values.yaml run the following commands:
+# helm repo add cmmchartmuseum https://chartmuseum.sharedtech-stable.cmmaz.cloud
+# helm show values cmmchartmuseum/postgresql --version 10.13.14
+postgresql:
+  enabled: true
+  fullnameOverride: diagnosis-postgres
+  image:
+    registry: covermymeds.azurecr.io
+    repository: database/postgres-database-diagnosis
+    tag: latest
+    pullPolicy: Always
+  # Hard-coded username and passwords
+  postgresqlUsername: admin
+  postgresqlPassword: admin
+  postgresqlPostgresPassword: admin
+  containerSecurityContext:
+    # Don't run as root
+    runAsUser: 999
+  # Persist data
+  primary:
+    persistence:
+      enabled: true
+    extraInitContainers:
+    - name: copy-persisted-data
+      image: covermymeds.azurecr.io/database/postgres-database-diagnosis:latest
+      command: ['/bin/sh', '-c']
+      args:
+      - ([ "$(ls -A /bitnami/postgresql/data)" ] && echo "data directory already exists; skipping" && exit 0 || echo "copying data" &&
+        mkdir -p /bitnami/postgresql/data && chown -R 999:999 /bitnami/postgresql/data && cp -p -r /var/lib/postgresql/persisted-data/* /bitnami/postgresql/data/)
+      volumeMounts:
+      - name: data
+        mountPath: /bitnami/postgresql
+  global:
+    storageClass: default
+  persistence:
+    enabled: true
+
+
+liquibase:
+  image:
+    # The image that the liquibase container runs
+    repository: kargocmm.azurecr.io/kargo-test/myapp-liquibase
+    # The liquibase image tag
+    tag: latest
+    pullPolicy: Always
+  enabled: false
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 512M
+    requests:
+      cpu: 512m
+      memory: 128M
