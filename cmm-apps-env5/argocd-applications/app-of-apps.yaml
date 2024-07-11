@@ -9,6 +9,7 @@ spec:
   generators:
     - list:
         elements:
+          - app: myapp
           - app: rxintake
           - app: rxservice
   template:
