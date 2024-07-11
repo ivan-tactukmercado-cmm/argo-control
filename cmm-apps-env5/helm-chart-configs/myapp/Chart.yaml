@@ -6,4 +6,4 @@ version: 1.0.0
 dependencies:
   - name: myapp
     repository: oci://kargocmm.azurecr.io/helm
-    version: 1.0.2
+    version: 1.0.5
