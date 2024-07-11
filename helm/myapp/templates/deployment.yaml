@@ -50,6 +50,36 @@ spec:
           volumeMounts:
             {{- toYaml . | nindent 12 }}
           {{- end }}
+      initContainers:
+        - name: liquibase
+          image: "{{ .Values.liquibase.image.repository }}:{{ .Values.liquibase.image.tag }}"
+          imagePullPolicy: {{ .Values.liquibase.image.pullPolicy }}
+          env:
+            - name: APP_ENV
+              value: "{{ .Values.environment.name }}"
+            - name: JAVA_OPTS
+              value: "-Xms{{ .Values.liquibase.resources.requests.memory }} -Xmx{{ .Values.liquibase.resources.limits.memory }}"
+            - name: DEFAULT_DB_HOSTNAME
+              value: "{{ .Values.postgresql.fullnameOverride }}"
+            - name: DEFAULT_DB_USERNAME
+              value: "{{ .Values.postgresql.postgresqlUsername }}"
+            - name: DEFAULT_DB_PASSWORD
+              value: "{{ .Values.postgresql.postgresqlPassword }}"
+            - name: DB_USERNAME
+              value: $(DEFAULT_DB_USERNAME)
+            - name: DB_PASSWORD
+              value: $(DEFAULT_DB_PASSWORD)
+            - name: DB_URL
+              value: jdbc:postgresql://$(DEFAULT_DB_HOSTNAME):5432/diagnosis_development
+            - name: DB_CHANGELOGFILE
+              value: changelog.xml
+          resources:
+            requests:
+              memory: {{ .Values.liquibase.resources.requests.memory }}
+              cpu: {{ .Values.liquibase.resources.requests.cpu }}
+            limits:
+              memory: {{ .Values.liquibase.resources.limits.memory }}
+              cpu: {{ .Values.liquibase.resources.limits.cpu }}
       {{- with .Values.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}
