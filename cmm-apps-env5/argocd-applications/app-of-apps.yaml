@@ -14,19 +14,19 @@ spec:
           - app: rxservice
   template:
     metadata:
-      name: "{{ app }}"
+      name: "{{ .app }}"
     spec:
       project: default
       source:
         repoURL: https://github.com/ivan-tactukmercado-cmm/argo-control
-        path: cmm-apps-env5/helm-chart-configs/{{ app }}
+        path: cmm-apps-env5/helm-chart-configs/{{ .app }}
         targetRevision: main
         helm:
           valueFiles:
-          - /cmm-apps-env5/helm-chart-configs/{{ app }}/values.yaml
+          - /cmm-apps-env5/helm-chart-configs/{{ .app }}/values.yaml
       destination:
         server: "https://kubernetes.default.svc"
-        namespace: "{{ app }}"
+        namespace: "{{ .app }}"
       syncPolicy:
         automated:
           prune: true
