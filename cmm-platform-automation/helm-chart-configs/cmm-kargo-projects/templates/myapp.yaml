@@ -21,7 +21,7 @@ metadata:
 spec:
   subscriptions:
   - image:
-      discoveryLimit: 10
+      discoveryLimit: 3
       repoURL:  kargocmm.azurecr.io/kargo-test/myapp
       imageSelectionStrategy: SemVer
   - image:
