@@ -34,6 +34,19 @@ spec:
 
 ---
 apiVersion: kargo.akuity.io/v1alpha1
+kind: Warehouse
+metadata:
+  name: liquibase
+  namespace: myapp
+spec:
+  subscriptions:
+  - image:
+      discoveryLimit: 10
+      repoURL:  kargocmm.azurecr.io/kargo-test/myapp-liquibase
+      imageSelectionStrategy: SemVer
+
+---
+apiVersion: kargo.akuity.io/v1alpha1
 kind: Stage
 metadata:
   name: staging
@@ -106,7 +119,17 @@ metadata:
   name: env5
   namespace: myapp
 spec:
-  subscriptions:
+  requestedFreight:
+  - origin:
+      kind: Warehouse
+      name: myapp
+    sources:
+      direct: true
+  - origin:
+      kind: Warehouse
+      name: liquibase
+    sources:
+      direct: true
     warehouse: myapp
   promotionMechanisms:
     gitRepoUpdates:
