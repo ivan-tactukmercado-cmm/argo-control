@@ -130,7 +130,6 @@ spec:
       name: liquibase
     sources:
       direct: true
-    warehouse: myapp
   promotionMechanisms:
     gitRepoUpdates:
       - repoURL: https://github.com/ivan-tactukmercado-cmm/argo-control.git
