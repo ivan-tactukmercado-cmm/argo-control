@@ -115,12 +115,14 @@ spec:
       kind: Warehouse
       name: myapp
     sources:
-      stages: staging
+      stages: 
+        - staging
   - origin:
       kind: Warehouse
       name: liquibase
     sources:
-      stages: staging
+      stages: 
+        - staging
   promotionMechanisms:
     gitRepoUpdates:
       - repoURL: https://github.com/ivan-tactukmercado-cmm/argo-control.git
