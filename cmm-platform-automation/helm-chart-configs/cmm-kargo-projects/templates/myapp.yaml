@@ -52,18 +52,17 @@ metadata:
   name: staging
   namespace: myapp
 spec:
-  subscriptions:
-      requestedFreight:
-      - origin:
-          kind: Warehouse
-          name: myapp
-        sources:
-          direct: true
-      - origin:
-          kind: Warehouse
-          name: liquibase
-        sources:
-          direct: true
+  requestedFreight:
+  - origin:
+      kind: Warehouse
+      name: myapp
+    sources:
+      direct: true
+  - origin:
+      kind: Warehouse
+      name: liquibase
+    sources:
+      direct: true
   promotionMechanisms:
     gitRepoUpdates:
       - repoURL: https://github.com/ivan-tactukmercado-cmm/argo-control.git
