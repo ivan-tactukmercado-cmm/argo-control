@@ -1,0 +1,6 @@
+dependencies:
+- name: myapp
+  repository: oci://kargocmm.azurecr.io/helm
+  version: 1.0.7
+digest: sha256:fb6e69766c5cf2254778bfb0648d5eb2e1aa54c849b59dce541a811db9f61189
+generated: "2024-07-12T18:43:14.972540686Z"
