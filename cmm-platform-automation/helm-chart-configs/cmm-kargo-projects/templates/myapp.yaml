@@ -1,0 +1,221 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: myapp
+  labels:
+    kargo.akuity.io/project: "true"
+
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Project
+metadata:
+  name: myapp
+
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Warehouse
+metadata:
+  name: myapp
+  namespace: myapp
+spec:
+  subscriptions:
+  - image:
+      discoveryLimit: 3
+      repoURL:  kargocmm.azurecr.io/kargo-test/myapp
+      imageSelectionStrategy: SemVer
+  - image:
+      discoveryLimit: 10
+      repoURL:  kargocmm.azurecr.io/kargo-test/myapp-liquibase
+      imageSelectionStrategy: SemVer
+  - chart:
+      repoURL: oci://kargocmm.azurecr.io/helm/myapp
+      semverConstraint: '>= 1.0.0'
+
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Warehouse
+metadata:
+  name: liquibase
+  namespace: myapp
+spec:
+  subscriptions:
+  - image:
+      discoveryLimit: 10
+      repoURL:  kargocmm.azurecr.io/kargo-test/myapp-liquibase
+      imageSelectionStrategy: SemVer
+
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: staging
+  namespace: myapp
+spec:
+  requestedFreight:
+  - origin:
+      kind: Warehouse
+      name: myapp
+    sources:
+      direct: true
+  - origin:
+      kind: Warehouse
+      name: liquibase
+    sources:
+      direct: true
+  promotionMechanisms:
+    gitRepoUpdates:
+      - repoURL: https://github.com/ivan-tactukmercado-cmm/argo-control.git
+        insecureSkipTLSVerify: true # TODO: Trust CMM CA if we're using git.innova-partners.com
+        writeBranch: main
+        pullRequest: {}
+        helm:
+          charts:
+          - repository: oci://kargocmm.azurecr.io/helm
+            name: myapp
+            chartPath: cmm-apps-staging/helm-chart-configs/myapp
+            origin:
+              kind: Warehouse
+              name: myapp
+          images:
+          - image:  kargocmm.azurecr.io/kargo-test/myapp
+            key: 'myapp.image.tag'
+            value: Tag
+            valuesFilePath: cmm-apps-staging/helm-chart-configs/myapp/values.yaml
+            origin:
+              kind: Warehouse
+              name: myapp
+          - image:  kargocmm.azurecr.io/kargo-test/myapp-liquibase
+            key: 'myapp.liquibase.image.tag'
+            value: Tag
+            valuesFilePath: cmm-apps-staging/helm-chart-configs/myapp/values.yaml
+            origin:
+              kind: Warehouse
+              name: myapp
+          - image:  kargocmm.azurecr.io/kargo-test/myapp-liquibase
+            key: 'myapp.liquibase.image.tag'
+            value: Tag
+            valuesFilePath: cmm-apps-staging/helm-chart-configs/myapp/values.yaml
+            origin:
+              kind: Warehouse
+              name: liquibase
+  verification:
+    analysisTemplates:
+      - name: analyze
+
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: release
+  namespace: myapp
+spec:
+  subscriptions:
+    upstreamStages:
+    - name: staging
+  promotionMechanisms:
+    gitRepoUpdates:
+      - repoURL: https://github.com/ivan-tactukmercado-cmm/argo-control.git
+        insecureSkipTLSVerify: true # TODO: Trust CMM CA if we're using git.innova-partners.com
+        writeBranch: main
+        pullRequest: {}
+        helm:
+          images:
+          - image:  kargocmm.azurecr.io/kargo-test/myapp
+            key: 'myapp.image.tag'
+            value: Tag
+            valuesFilePath: cmm-apps-release/helm-chart-configs/myapp/values.yaml
+          - image:  kargocmm.azurecr.io/kargo-test/myapp-liquibase
+            key: 'myapp.liquibase.image.tag'
+            value: Tag
+            valuesFilePath: cmm-apps-release/helm-chart-configs/myapp/values.yaml
+          charts:
+          - repository: oci://kargocmm.azurecr.io/helm
+            name: myapp
+            chartPath: cmm-apps-release/helm-chart-configs/myapp
+  verification:
+    analysisTemplates:
+      - name: analyze
+
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: env5
+  namespace: myapp
+spec:
+  requestedFreight:
+  - origin:
+      kind: Warehouse
+      name: myapp
+    sources:
+      direct: true
+  - origin:
+      kind: Warehouse
+      name: liquibase
+    sources:
+      direct: true
+  promotionMechanisms:
+    gitRepoUpdates:
+      - repoURL: https://github.com/ivan-tactukmercado-cmm/argo-control.git
+        insecureSkipTLSVerify: true # TODO: Trust CMM CA if we're using git.innova-partners.com
+        writeBranch: main
+        pullRequest: {}
+        helm:
+          charts:
+          - repository: oci://kargocmm.azurecr.io/helm
+            name: myapp
+            chartPath: cmm-apps-env5/helm-chart-configs/myapp
+            origin:
+              kind: Warehouse
+              name: myapp
+          images:
+          - image:  kargocmm.azurecr.io/kargo-test/myapp
+            key: 'myapp.image.tag'
+            value: Tag
+            valuesFilePath: cmm-apps-env5/helm-chart-configs/myapp/values.yaml
+            origin:
+              kind: Warehouse
+              name: myapp
+          - image:  kargocmm.azurecr.io/kargo-test/myapp-liquibase
+            key: 'myapp.liquibase.image.tag'
+            value: Tag
+            valuesFilePath: cmm-apps-env5/helm-chart-configs/myapp/values.yaml
+            origin:
+              kind: Warehouse
+              name: myapp
+          - image:  kargocmm.azurecr.io/kargo-test/myapp-liquibase
+            key: 'myapp.liquibase.image.tag'
+            value: Tag
+            valuesFilePath: cmm-apps-env5/helm-chart-configs/myapp/values.yaml
+            origin:
+              kind: Warehouse
+              name: liquibase
+  verification:
+    analysisTemplates:
+      - name: analyze
+
+---
+kind: AnalysisTemplate
+apiVersion: argoproj.io/v1alpha1
+metadata:
+  name: analyze
+  namespace: myapp
+spec:
+  metrics:
+  - name: pass
+    count: 1
+    interval: 5s
+    failureLimit: 0
+    provider:
+      job:
+        spec:
+          template:
+            spec:
+              containers:
+              - name: sleep
+                image: alpine:3.8
+                command: ['/bin/sh', '-c']
+                args: ['sleep 10; exit 0']
+              restartPolicy: Never
+          backoffLimit: 0

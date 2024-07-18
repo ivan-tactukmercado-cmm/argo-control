@@ -1,0 +1,14 @@
+myapp:
+  image:
+    repository:  kargocmm.azurecr.io/kargo-test/myapp
+    tag: '1.0.12'
+  liquibase:
+    image:
+      repository:  kargocmm.azurecr.io/kargo-test/myapp-liquibase
+      tag: '1.0.9'
+
+  replica:
+    replicaCount: 1
+
+global:
+  ingressDomain: env5.kat.cmmaz.cloud

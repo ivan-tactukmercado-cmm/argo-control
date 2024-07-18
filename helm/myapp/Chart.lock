@@ -1,0 +1,6 @@
+dependencies:
+- name: postgresql
+  repository: https://chartmuseum.sharedtech-stable.cmmaz.cloud
+  version: 10.13.14
+digest: sha256:9ec976403099fc70f69cca8c657d688d3591b59acc6ecfd19563c187282adc9e
+generated: "2024-07-11T09:51:54.278475-04:00"

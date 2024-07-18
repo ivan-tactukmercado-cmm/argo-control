@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: app-of-apps
+  namespace: argocd
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+    - list:
+        elements:
+          - app: myapp
+          - app: rxintake
+          - app: rxservice
+  template:
+    metadata:
+      name: "{{ .app }}"
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/ivan-tactukmercado-cmm/argo-control
+        path: cmm-apps-release/helm-chart-configs/{{ .app }}
+        targetRevision: main
+        helm:
+          valueFiles:
+          - /cmm-apps-release/helm-chart-configs/{{ .app }}/values.yaml
+      destination:
+        server: "https://kubernetes.default.svc"
+        namespace: "{{ .app }}"
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
