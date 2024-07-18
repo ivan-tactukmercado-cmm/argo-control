@@ -53,7 +53,17 @@ metadata:
   namespace: myapp
 spec:
   subscriptions:
-    warehouse: myapp
+      requestedFreight:
+      - origin:
+          kind: Warehouse
+          name: myapp
+        sources:
+          direct: true
+      - origin:
+          kind: Warehouse
+          name: liquibase
+        sources:
+          direct: true
   promotionMechanisms:
     gitRepoUpdates:
       - repoURL: https://github.com/ivan-tactukmercado-cmm/argo-control.git
@@ -65,15 +75,31 @@ spec:
           - repository: oci://kargocmm.azurecr.io/helm
             name: myapp
             chartPath: cmm-apps-staging/helm-chart-configs/myapp
+            origin:
+              kind: Warehouse
+              name: myapp
           images:
           - image:  kargocmm.azurecr.io/kargo-test/myapp
             key: 'myapp.image.tag'
             value: Tag
             valuesFilePath: cmm-apps-staging/helm-chart-configs/myapp/values.yaml
+            origin:
+              kind: Warehouse
+              name: myapp
           - image:  kargocmm.azurecr.io/kargo-test/myapp-liquibase
             key: 'myapp.liquibase.image.tag'
             value: Tag
             valuesFilePath: cmm-apps-staging/helm-chart-configs/myapp/values.yaml
+            origin:
+              kind: Warehouse
+              name: myapp
+          - image:  kargocmm.azurecr.io/kargo-test/myapp-liquibase
+            key: 'myapp.liquibase.image.tag'
+            value: Tag
+            valuesFilePath: cmm-apps-staging/helm-chart-configs/myapp/values.yaml
+            origin:
+              kind: Warehouse
+              name: liquibase
   verification:
     analysisTemplates:
       - name: analyze
